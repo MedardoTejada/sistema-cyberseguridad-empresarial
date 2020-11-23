@@ -1,27 +1,23 @@
 #!/bin/bash
 
+op=`zenity --width=800 --height=300 --list --title="MENU PRINCIPAL" --text "BIENVENIDO AL MENU PRINCIPAL DEL SISTEMA EMPRESARIAL DE CIBERSEGURIDAD" --column "Seleccione una opcion" "1: Realizar un escaneo completo de su pagina web" "2: Escanear y mostrar el ip de todos los dispositivos encontrados en su red" "3: Escanear y mostrar todos los puertos abiertos de algun dispositivo de su empresa" "4: Mostrar la ubicacion de algun telefono de su empresa" "5: Salir del sistema"`
+
+
 while true; do
-clear
-      echo "Seleccione 1: Para escanear la pagina web de su negocio"
-      echo "Seleccione 2: Para escanear todos los ip conectados a la red de su empresa"
-      echo "Seleccione 3: Para detectar puertos abiertos en alguna maquina de su empresa"
-      echo "Seleccione 4: Para realizar un escaneo de algun telefono de tu empresa"
-      echo "Seleccione 5: Para generar un reporte de los analisis realizados"
-    
-    read -p ":" op
+     clear
+     
+   
     case $op in
-        [1]* ) 
+        ["1: Realizar un escaneo completo de su pagina web"]* ) 
          clear
             echo "***********************************************"
             echo "**********   SCANNEAR MI SITIO WEB   **********"
             echo "***********************************************"
             echo ""
             
-
-            echo 'introduzca la url de su sitio web para que la analizemos y luego presione la tecla ENTER: '
+            variable_web=`(zenity --entry --title="Escaneando Sitio web de la empresa" \
+--text "Introduzca la url de su sitio web para que la analizemos")`
            
-
-             read variable_web
              wpscan --url $variable_web     
          echo ''
          read variable_stop
@@ -29,34 +25,42 @@ clear
 
         
         
-        [2]* ) 
+        ["2: Escanear y mostrar el ip de todos los dispositivos encontrados en su red"]* ) 
          clear
             echo "**************************************************************"
             echo "**********   IP CONECTADOS A LA RED DE SU EMPRESA   **********"
             echo "**************************************************************"
             echo ""
             netstat -rn
-            echo "Paso 1: copie la ip que se encuentra debajo de la columna >>Destination<<"
-            echo 'Pegue la ip copiada justo en esta linea y presione >>ENTER<<: '
-            read variable_SubRed
+            
+            
+             variable_SubRed=`(zenity --entry --title="Escaneando Sitio web de la empresa" \
+--text "Escriba la ip que se encuentra en la columna <Destination> (en caso de que hayan dos, ignorar la que empieze con <0>)")`
+            
+           
+         
             echo ""
             echo "Escaneando..."
              nmap -sP $variable_SubRed/24 -oG - | awk '/Up$/{print $2}'
             echo ""
             echo "Listo!, Estas son todas las IP conectadas a la red de su Empresa"
-            echo "Le recomendamos hacer un inventario de IP de las maquinas que tenga conectada a red en su empresa."
+            echo "Le recomendamos hacer un inventario de IP de las maquinas que tenga conectada a red, y estar alerta ante cualuqiera IP sospechosa."
          echo ''
          read variable_stop
+         op=`zenity --width=800 --height=300 --list --title="MENU PRINCIPAL" --text "BIENVENIDO AL MENU PRINCIPAL DEL SISTEMA EMPRESARIAL DE CIBERSEGURIDAD" --column "Seleccione una opcion" "1: Realizar un escaneo completo de su pagina web" "2: Escanear y mostrar el ip de todos los dispositivos encontrados en su red" "3: Escanear y mostrar todos los puertos abiertos de algun dispositivo de su empresa" "4: Mostrar la ubicacion de algun telefono de su empresa" "5: Salir del sistema"`
+
+
         ;;
 
-        [3]* )
+        ["3: Escanear y mostrar todos los puertos abiertos de algun dispositivo de su empresa"]* )
         clear
             echo "*****************************************************"
             echo "**********   DETECCION DE PUERTOS ABIERTOS **********"
             echo "*****************************************************"
             echo ""
-            echo 'Escriba la IP del dispositivo que desea analizar: '
-            read variable_puertos
+            variable_puertos=`(zenity --entry --title="Escaneando Sitio web de la empresa" \
+--text "Escriba la ip del dispositivo que desea escanear")`
+          
             echo ""
             echo "Escaneando..."
              nmap -sV $variable_puertos
@@ -66,16 +70,21 @@ clear
             echo "Le recomendamos dar una revision de todos los puertos listados en el reporte"
          echo ''
          read variable_stop
+          op=`zenity --width=800 --height=300 --list --title="MENU PRINCIPAL" --text "BIENVENIDO AL MENU PRINCIPAL DEL SISTEMA EMPRESARIAL DE CIBERSEGURIDAD" --column "Seleccione una opcion" "1: Realizar un escaneo completo de su pagina web" "2: Escanear y mostrar el ip de todos los dispositivos encontrados en su red" "3: Escanear y mostrar todos los puertos abiertos de algun dispositivo de su empresa" "4: Mostrar la ubicacion de algun telefono de su empresa" "5: Salir del sistema"`
+
 
         ;;
-        [4]* ) 
+        ["4: Mostrar la ubicacion de algun telefono de su empresa"]* ) 
          clear
             echo "******************************************************"
             echo "**********   ESCANEAR TELEFONO EMPRESARIAL  **********"
             echo "******************************************************"
             echo ""
-          echo 'Escriba el numero de telefono de su empresa, recuerda poner la extension >> +507 << seguido del numero SIN espacios: '
-            read variable_telefono
+
+            variable_telefono=`(zenity --entry --title="TELEFONO EMPRESARIAL" \
+--text "INGRESE EL NUMERO DE TELEFONO (importante agregar la extension < +507 > seguido del numero pegado.)")`
+         
+        
 
             sudo python3 phoneinfoga.py -n $variable_telefono
             echo ""
@@ -83,10 +92,26 @@ clear
             echo "Le recomendamos dar revisar que todos los datos esten correctamente"
          echo ''
          read variable_stop
+        op=`zenity --width=800 --height=300 --list --title="MENU PRINCIPAL" --text "BIENVENIDO AL MENU PRINCIPAL DEL SISTEMA EMPRESARIAL DE CIBERSEGURIDAD" --column "Seleccione una opcion" "1: Realizar un escaneo completo de su pagina web" "2: Escanear y mostrar el ip de todos los dispositivos encontrados en su red" "3: Escanear y mostrar todos los puertos abiertos de algun dispositivo de su empresa" "4: Mostrar la ubicacion de algun telefono de su empresa" "5: Salir del sistema"`
+
 
         ;;
 
-        [5]* ) echo "Opción Seleccionada 5 !"; break;;        
-        * ) echo "Seleccione una Opción de 1 a 5.";;
+        ["5: Salir del sistema"]* ) 
+          variable_salir=`zenity --width=800 --height=300 --list --title="SALIR" --text "ESTA SEGURO QUE DESEA SALIR DEL SISTEMA?" --column "Seleccione una opcion" "Salir" "No"`
+         
+if [ $variable_salir = "Salir" ]
+ then
+   exit
+
+fi
+
+op=`zenity --width=800 --height=300 --list --title="MENU PRINCIPAL" --text "BIENVENIDO AL MENU PRINCIPAL DEL SISTEMA EMPRESARIAL DE CIBERSEGURIDAD" --column "Seleccione una opcion" "1: Realizar un escaneo completo de su pagina web" "2: Escanear y mostrar el ip de todos los dispositivos encontrados en su red" "3: Escanear y mostrar todos los puertos abiertos de algun dispositivo de su empresa" "4: Mostrar la ubicacion de algun telefono de su empresa" "5: Salir del sistema"`
+
+
+          
+         ;;        
+        
+        
     esac
 done
